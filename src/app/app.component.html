@@ -4,28 +4,31 @@
 
 <div class="wrapper">
 
-  <!-- on every keystroke, set the total string input to local scope -->
+  <!-- on every keystroke, set the total string input to local scope...
+  using #id to retrieve value, which is quicker than event.value -->
   <div class="control">
     Input 1:
-    <input #box (keyup)="onKey(box.value)" />
-    {{ query1 }}
+    <input #box (keyup)="press1(box.value)" />
   </div>
-  output: {{ values1 }}
-  <hr>
+  <!-- output: {{ out1 }} -->
   <div class="list is-hoverable">
-     <a class="list-item" *ngFor="let value of this.values1">{{value}}</a>
+    <a class="list-item" *ngFor="let value of this.out1">{{value}}</a>
   </div>
-    
+  <hr>
+  
+  <!-- using ngModel and $event object...outdated, slow...also ngModel requires FormsModule import -->
   <div class="control">
     Input 2:
-    <!-- <input type="text" [(ngModel)]="query" class="input" /> -->
-    {{ query1 }}
+    <input type="text" [(ngModel)]="out2" (input)="press2($event)" class="input" />    
   </div>
-  output:
+  processed input: {{ query1 }}
+  <br>
+  output: {{ out2 }}
 
 </div>
 
 <hr>
+<!-- fetch items from api endpoint -->
 <div class="field">
   <label class="label">Input 3:</label>
   <div class="control">
@@ -42,6 +45,13 @@
   output:
 </div>
 
+<hr>
 
+<!-- Using servbice to fetch data (from local Json file, simulating API) -->
+Config Service:
+<br>
+{{config.heroesUrl}}<br>
+{{config.textfile}}<br>
+{{config.date}}
 
 <router-outlet />
