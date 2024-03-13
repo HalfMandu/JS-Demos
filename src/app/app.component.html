@@ -2,56 +2,62 @@
 <!-- Default Angular Header -->
 <app-header></app-header>
 
+<!-- Inputs -->
 <div class="wrapper">
 
   <!-- on every keystroke, set the total string input to local scope...
   using #id to retrieve value, which is quicker than event.value -->
   <div class="control">
     Input 1:
-    <input #box (keyup)="press1(box.value)" />
+    <input #box (keyup)="keyPress1(box.value)" />
   </div>
-  <!-- output: {{ out1 }} -->
-  <div class="list is-hoverable">
-    <a class="list-item" *ngFor="let value of this.out1">{{value}}</a>
-  </div>
+  processed input:
+  <a class="list-item" *ngFor="let value of this.outArray">{{value}}</a>
   <hr>
   
   <!-- using ngModel and $event object...outdated, slow...also ngModel requires FormsModule import -->
   <div class="control">
     Input 2:
-    <input type="text" [(ngModel)]="out2" (input)="press2($event)" class="input" />    
+    <input type="text" [(ngModel)]="out2" (input)="keyPress2($event)" class="input" />    
   </div>
   processed input: {{ query1 }}
   <br>
-  output: {{ out2 }}
+  2-way binded field: {{ out2 }}
 
 </div>
 
-<hr>
-<!-- fetch items from api endpoint -->
-<div class="field">
-  <label class="label">Input 3:</label>
-  <div class="control">
-    <input class="input" type="text">
+<!-- API calls -->
+<div class="wrapper">
+
+  <!-- fetch items from api endpoint -->
+  <hr>
+  <div class="field">
+    <label class="label">Input 3:</label>
+    <div class="control">
+      <input class="input" type="text">
+    </div>
+    output:
   </div>
-  output:
-</div>
-<hr>
-<div class="field">
-  <label class="label">Input 4:</label>
-  <div class="control">
-    <input class="input" type="text">
+
+  <!--  -->
+  <hr>
+  <div class="field">
+    <label class="label">Input 4:</label>
+    <div class="control">
+      <input class="input" type="text">
+    </div>
+    output:
   </div>
-  output:
+
+  <hr>
+
+  <!-- Using servbice to fetch data (from local Json file, simulating API) -->
+  Config Service:
+  <br>
+  {{config?.heroesUrl}}<br>
+  {{config?.textfile}}<br>
+  {{config?.date}}
+
 </div>
-
-<hr>
-
-<!-- Using servbice to fetch data (from local Json file, simulating API) -->
-Config Service:
-<br>
-{{config.heroesUrl}}<br>
-{{config.textfile}}<br>
-{{config.date}}
 
 <router-outlet />

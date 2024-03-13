@@ -42,22 +42,42 @@ import { ConfigService } from './config.service';
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
-  title = 'fetchList';
-  out1 = '';
-  query1 = '';
-  out2 = '';
+  
+  //input fields
+  title: string = 'fetchList';
+  outArray: string[] = [];
+  query1: string = '';
+  out2: string = '';
+
+  constructor(private httpClient: HttpClient, private configService: ConfigService) { }
+
+  ngOnInit(): void {
+    // this.showConfig();
+    // this.showConfig2();
+    this.showConfig3();
+    //useFetch();
+    //httpClient1();
+    //httpClient2();
+  }
+
+  config: any;
+
+  //array of 2-field objects: author, text
+  private authorUrl: string = 'https://type.fit/api/quotes';
 
   //receives #ID ref param -- faster
-  press1(value: string) {
-    this.out1 += value + ' | ';
+  //uses Array to store entries
+  keyPress1(value: string) {
+    this.outArray.push(value + " | ");
   }
 
   //$event object -- slower
-  press2(event: Event) {
+  keyPress2(event: Event) {
     this.query1 += (event.target as HTMLInputElement).value + ' | ';
   }
 
-  //function called each time a key is pressed..reset the timer, update the status, attempt to make the call
+  //function called each time a key is pressed...
+  //reset the timer, update the status, attempt to make the call
   //  keyPressed(key){
 
   //   console.log("key pressed...");
@@ -77,11 +97,8 @@ export class AppComponent {
 
   //   }
 
-  constructor(private httpClient: HttpClient, private configService: ConfigService) { }
 
-  config: any;
-
-  //call service
+  //call service, subscribe to Observable
   showConfig() {
     this.configService.getConfig()
       .subscribe(data => this.config = {
@@ -91,15 +108,16 @@ export class AppComponent {
       });
   }
 
-  //array of 2-field objects: author, text
-  private authorUrl: string = 'https://type.fit/api/quotes';
-  
-  //lifecycle hook
-  ngOnInit(): void {
-    this.showConfig();
-    //useFetch();
-    //httpClient1();
-    //httpClient2();
+  //v2 -- destructuring...clone the data object, using its known Config shape
+  showConfig2() {
+    this.configService.getConfig()
+      .subscribe(data => this.config = { ...data });
+  }
+
+  //v3 -- searching with search terms
+  showConfig3() {
+    this.configService.searchTerm("2020-01-29")
+      .subscribe(data => this.config = { ...data });
   }
   
   //using fetch()
