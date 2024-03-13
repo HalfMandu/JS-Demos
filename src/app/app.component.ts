@@ -46,29 +46,38 @@ export class AppComponent {
   //input fields
   title: string = 'fetchList';
   outArray: string[] = [];
+  outString: string = '';
   query1: string = '';
   out2: string = '';
+  config: any;
+  authorUrl: string = 'https://type.fit/api/quotes'; //array of 2-field objects: author, text
+  //autocomplete
+  myTimer: NodeJS.Timeout | number = 0;
+  isWaiting = false;
+  query = "";
+  items = [];
+  url = "";
 
   constructor(private httpClient: HttpClient, private configService: ConfigService) { }
 
   ngOnInit(): void {
     // this.showConfig();
-    // this.showConfig2();
-    this.showConfig3();
-    //useFetch();
+    this.showConfig2();
+    //this.showConfig3();
+
+    this.useFetch();
     //httpClient1();
     //httpClient2();
   }
 
-  config: any;
-
-  //array of 2-field objects: author, text
-  private authorUrl: string = 'https://type.fit/api/quotes';
-
-  //receives #ID ref param -- faster
-  //uses Array to store entries
+  //receives #ID ref param -- faster...uses Array to store entries
   keyPress1(value: string) {
     this.outArray.push(value + " | ");
+  }
+
+  //using string instead of array
+  keyPress1b(value: string) {
+    this.outString += value + ' | ';
   }
 
   //$event object -- slower
@@ -76,27 +85,24 @@ export class AppComponent {
     this.query1 += (event.target as HTMLInputElement).value + ' | ';
   }
 
-  //function called each time a key is pressed...
-  //reset the timer, update the status, attempt to make the call
-  //  keyPressed(key){
+  //function called on each key press...reset the timer, update the status, attempt to make the call
+  // keyPressed(key: any) {
 
-  //   console.log("key pressed...");
+  //   console.log("key pressed..." + key);
 
   //   clearTimeout(this.myTimer); 	//reset timer each time key pressed
   //   this.isWaiting = true; 			//update status
 
   //   //if input not empty AND waiting status was not interrupted, then make the API call. Then reset status.
   //   this.myTimer = setTimeout(() => {
-  //       //if (this.isWaiting && document.getElementsByName("query")[0].value) {
-  //       if (this.isWaiting && this.query) {
-  //         console.log("making API call with: " + this.query);
-  //     this.http.get(url).then(items) => this.items = items;
-  //       }
-  //       this.isWaiting = false; 	//reset status
-  //     }, 2000);
-
-  //   }
-
+  //     //if (this.isWaiting && document.getElementsByName("query")[0].value) {
+  //     if (this.isWaiting && this.query) {
+  //       console.log("making API call with: " + this.query);
+  //       this.httpClient.get(this.url).then(items) => this.items = items;
+  //     }
+  //     this.isWaiting = false; 	//reset status
+  //   }, 2000);
+  // }
 
   //call service, subscribe to Observable
   showConfig() {
@@ -123,11 +129,12 @@ export class AppComponent {
   //using fetch()
   useFetch(){
     fetch(this.authorUrl)
-      .then(console.log);
+    .then(response => response.json())
+    .then(data => console.log(data));	
   }
 
-  url2 = "";
   // HttpClient - http.request
+  url2 = "";
   httpClient1(term: string): Observable<Object> {
     return this.httpClient.request('GET', this.url2);
   }
@@ -138,8 +145,8 @@ export class AppComponent {
     return this.httpClient.get(this.url3);
   }
   
-  url4 = "";
   //JSONP example
+  url4 = "";
   // requestJsonp(url4, callback = 'callback') {
   //   return this.httpClient.jsonp(this.url4, callback);
   //  }

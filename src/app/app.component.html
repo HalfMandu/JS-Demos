@@ -10,9 +10,14 @@
   <div class="control">
     Input 1:
     <input #box (keyup)="keyPress1(box.value)" />
+    <br>
+    Input 1b:
+    <input #box2 (keyup)="keyPress1b(box2.value)" />
   </div>
-  processed input:
+  processed input 1 (as array):
   <a class="list-item" *ngFor="let value of this.outArray">{{value}}</a>
+  <br>
+  processed input 1b (as string): {{outString}}
   <hr>
   
   <!-- using ngModel and $event object...outdated, slow...also ngModel requires FormsModule import -->
