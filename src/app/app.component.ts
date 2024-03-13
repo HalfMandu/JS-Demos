@@ -67,7 +67,8 @@ export class AppComponent {
     //this.showConfig3();
 
     // this.useFetch();
-    this.useFetch2();
+    // this.useFetch2();
+    this.useFetch3();
     //httpClient1();
     //httpClient2();
   }
@@ -137,8 +138,26 @@ export class AppComponent {
 
   //using fetch() with async/await
   async useFetch2(){
-    let response = await fetch(this.authorUrl);
+    const response = await fetch(this.authorUrl);
 		this.authors = await response.json();
+  }
+  
+  //wrapping in function, gives its own namespace, security, self-calling, immutable...
+	useFetch3 = () => {
+    (async () => {
+      const response = await fetch(this.authorUrl);
+			this.authors = await response.json();
+		})();
+	}
+  
+  //using fetch() with error handling block
+  async useFetch4(){
+    try {
+      const response = await fetch(this.authorUrl);
+      this.authors = await response.json();
+    } catch (error) {
+      console.log("Error:", error);
+    }
   }
 
   // HttpClient - http.request

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError  } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +14,8 @@ export class ConfigService {
 
   //with a generic, Config (IUnterface below) that indicates the data return type
   getConfig(): Observable<Config> {
-    return this.httpClient.get<Config>(this.configUrl);
+    return <Observable<any>>this.httpClient.get<Config>(this.configUrl)
+      .pipe(catchError(this.errorHandler));
   }
 
   //Tell HttpClient that you want the full response with the observe option of the get() method...
@@ -22,6 +24,16 @@ export class ConfigService {
   getConfigResponse(): Observable<HttpResponse<Config>> {
     return this.httpClient.get<Config>(this.configUrl, { observe: 'response' });
   }
+  
+  //error Handler
+  errorHandler(error: HttpErrorResponse) {
+    return throwError(error.message || 'server Error');
+  }
+
+  // getPlayersFlat(): Observable<Player[]> {
+  //   return <Observable<Player[]>> this.http.get<Player[]>(baseURL + 'api/player?year=2020')
+  //     .pipe(catchError(this.processHTTPMsgService.handleError));
+  // }
 
   // GET items whose name contains search term
   searchTerm(term: string): Observable<any> {

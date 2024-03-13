@@ -49,17 +49,20 @@
   <!-- Using service to fetch data (from local Json file, simulating API) -->
   Config Service:
   <br>
-  {{config?.heroesUrl}}<br>
-  {{config?.textfile}}<br>
-  {{config?.date}}
+  <ul class="list-group">
+    <li class="list-item">{{config?.heroesUrl}}</li>
+    <li class="list-item">{{config?.textfile}}</li>
+    <li class="list-item">{{config?.date}}</li>
+  </ul>
 
   <!-- Using fetch() to display author API call-->
   <hr>
   Author Fetch:
   <!-- {{authors}} -->
-  <div class="list is-hoverable">
-    <a class="list-item" *ngFor="let item of authors"><b>{{item.author}}</b> : {{item.text}} <br></a>
-  </div>
+  <ul class="list-group">
+    <li class="list-item" *ngFor="let item of authors"><b>{{item.author}}</b> : {{item.text}} 
+    </li>
+  </ul>
   <br>
 
 </div>
