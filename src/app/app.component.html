@@ -44,24 +44,23 @@
     output:
   </div>
 
-  <!--  -->
-  <hr>
-  <div class="field">
-    <label class="label">Input 4:</label>
-    <div class="control">
-      <input class="input" type="text">
-    </div>
-    output:
-  </div>
-
   <hr>
 
-  <!-- Using servbice to fetch data (from local Json file, simulating API) -->
+  <!-- Using service to fetch data (from local Json file, simulating API) -->
   Config Service:
   <br>
   {{config?.heroesUrl}}<br>
   {{config?.textfile}}<br>
   {{config?.date}}
+
+  <!-- Using fetch() to display author API call-->
+  <hr>
+  Author Fetch:
+  <!-- {{authors}} -->
+  <div class="list is-hoverable">
+    <a class="list-item" *ngFor="let item of authors"><b>{{item.author}}</b> : {{item.text}} <br></a>
+  </div>
+  <br>
 
 </div>
 

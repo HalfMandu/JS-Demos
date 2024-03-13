@@ -51,8 +51,9 @@ export class AppComponent {
   out2: string = '';
   config: any;
   authorUrl: string = 'https://type.fit/api/quotes'; //array of 2-field objects: author, text
+  authors: any;
   //autocomplete
-  myTimer: NodeJS.Timeout | number = 0;
+  //myTimer: NodeJS.Timeout | number = 0;
   isWaiting = false;
   query = "";
   items = [];
@@ -65,7 +66,8 @@ export class AppComponent {
     this.showConfig2();
     //this.showConfig3();
 
-    this.useFetch();
+    // this.useFetch();
+    this.useFetch2();
     //httpClient1();
     //httpClient2();
   }
@@ -126,27 +128,30 @@ export class AppComponent {
       .subscribe(data => this.config = { ...data });
   }
   
-  //using fetch()
+  //using fetch() with .then() chain
   useFetch(){
     fetch(this.authorUrl)
-    .then(response => response.json())
-    .then(data => console.log(data));	
+      .then(response => response.json())
+      .then(data => this.authors = data);
+  }
+
+  //using fetch() with async/await
+  async useFetch2(){
+    let response = await fetch(this.authorUrl);
+		this.authors = await response.json();
   }
 
   // HttpClient - http.request
-  url2 = "";
   httpClient1(term: string): Observable<Object> {
-    return this.httpClient.request('GET', this.url2);
+    return this.httpClient.request('GET', this.authorUrl);
   }
   
   //HttpClient - http.get
-  url3 = "";
   httpClient2() {
-    return this.httpClient.get(this.url3);
+    return this.httpClient.get(this.authorUrl);
   }
   
   //JSONP example
-  url4 = "";
   // requestJsonp(url4, callback = 'callback') {
   //   return this.httpClient.jsonp(this.url4, callback);
   //  }
