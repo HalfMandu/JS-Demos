@@ -133,7 +133,8 @@ export class AppComponent {
   useFetch(){
     fetch(this.authorUrl)
       .then(response => response.json())
-      .then(data => this.authors = data);
+      .then(data => this.authors = data)
+      .catch(error => {console.log(error)});
   }
 
   //using fetch() with async/await
@@ -158,6 +159,32 @@ export class AppComponent {
     } catch (error) {
       console.log("Error:", error);
     }
+  }
+
+  //now with response checking
+  async useFetch5(){
+      const response = await fetch(this.authorUrl);
+      if (response.ok) {
+        this.authors = await response.json();
+        return response.json();
+      }
+      throw new Error('Something went wrong');
+  }
+
+  //using fetch() with .then() chain
+  useFetch6(){
+    return fetch(this.authorUrl)
+      .then(response => response.json())
+      .then(data => this.authors = data)
+      .then(this.handleErrors);
+  }
+
+  //error handler for above function
+  handleErrors(response: any) {
+    if (!response.ok) {
+      throw Error(response.statusText);
+    }
+    return response;
   }
 
   // HttpClient - http.request
