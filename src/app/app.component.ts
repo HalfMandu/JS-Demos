@@ -68,7 +68,10 @@ export class AppComponent {
 
     // this.useFetch();
     // this.useFetch2();
-    this.useFetch3();
+    // this.useFetch3();
+    //this.useFetch4();
+    // this.useFetch5();
+    this.useFetch6();
     //httpClient1();
     //httpClient2();
   }
@@ -166,9 +169,10 @@ export class AppComponent {
       const response = await fetch(this.authorUrl);
       if (response.ok) {
         this.authors = await response.json();
-        return response.json();
       }
-      throw new Error('Something went wrong');
+      else{
+        throw new Error('Something went wrong');
+      }
   }
 
   //using fetch() with .then() chain
@@ -182,9 +186,11 @@ export class AppComponent {
   //error handler for above function
   handleErrors(response: any) {
     if (!response.ok) {
+      console.log(response.ok);
       throw Error(response.statusText);
+    }else{
+      return response;
     }
-    return response;
   }
 
   // HttpClient - http.request
