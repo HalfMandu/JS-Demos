@@ -36,6 +36,11 @@ import { ConfigService } from './config.service';
 		2. 5000ms have passed 
 	-user input should start some timer which, once elapsed, will check the input
 		-if not empty, it will use it as the param to make the api call
+  -You can use the github api for this. 
+    https://api.github.com/users/USERNAME/repos 
+      will list public repositories for the user USERNAME. 
+    to find all the user's repos
+	    https://api.github.com/users/halfmandu/repos
  */
 
 @Component({
@@ -59,13 +64,15 @@ export class AppComponent {
   query1: string = '';
   out2: string = '';
   config: any;
+  gitHubURL: string = 'https://api.github.com/users/halfmandu/repos'; //array of repo Objects
   authorUrl: string = 'https://type.fit/api/quotes'; //array of 2-field objects: author, text
   authors: any;
   //autocomplete
   timeoutID: any;
   isWaiting = false;
   query = '';
-  items = [];
+  items2 = [];
+  items: any;
   url = '';
 
   constructor(
@@ -118,8 +125,11 @@ export class AppComponent {
     this.timeoutID = setTimeout(() =>{
       if (value) {
         console.log('timer done AND input not empty, sending http request...');
-        // this.httpClient.get(this.url)
+        // this.httpClient.get(this.gitHubURL)
         //   .then(items) => this.items = items;
+        this.httpClient.get(this.gitHubURL).subscribe(res => {
+          this.items = res;
+        })
       }
     }, 2000);
   }

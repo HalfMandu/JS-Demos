@@ -42,6 +42,12 @@
       <input class="input" #box3 (keyup)="autoComplete(box3.value)">
     </div>
     output:
+    <br>
+      <!-- {{authors}} -->
+  <ul class="list-group">
+    <li class="list-item" *ngFor="let item of items"><b>{{item.name}}</b> : {{item.description}} 
+    </li>
+  </ul>
   </div>
 
   <hr>
