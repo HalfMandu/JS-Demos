@@ -76,6 +76,9 @@ export class AppComponent {
     //httpClient2();
   }
 
+  //////////////////////////////////
+  //Event handlers 
+
   //receives #ID ref param -- faster...uses Array to store entries
   keyPress1(value: string) {
     this.outArray.push(value + " | ");
@@ -89,6 +92,12 @@ export class AppComponent {
   //$event object -- slower
   keyPress2(event: Event) {
     this.query1 += (event.target as HTMLInputElement).value + ' | ';
+  }
+
+  //////////////////////////////////
+  //Autcomplete input
+  keyPress3(value: string) {
+    this.query = value;
   }
 
   //function called on each key press...reset the timer, update the status, attempt to make the call
@@ -109,6 +118,9 @@ export class AppComponent {
   //     this.isWaiting = false; 	//reset status
   //   }, 2000);
   // }
+
+  //////////////////////////////////
+  //Data fetching
 
   //call service, subscribe to Observable
   showConfig() {
@@ -132,6 +144,9 @@ export class AppComponent {
       .subscribe(data => this.config = { ...data });
   }
   
+  ////////////////////////////////////////////////
+  // .then() vs async/await
+
   //using fetch() with .then() chain
   useFetch(){
     fetch(this.authorUrl)
@@ -147,6 +162,7 @@ export class AppComponent {
   }
   
   //wrapping in function, gives its own namespace, security, self-calling, immutable...
+  //..self calling, nameless function is assigned to the variable
 	useFetch3 = () => {
     (async () => {
       const response = await fetch(this.authorUrl);
@@ -185,8 +201,8 @@ export class AppComponent {
 
   //error handler for above function
   handleErrors(response: any) {
-    if (!response.ok) {
-      console.log(response.ok);
+    if (!response) {
+      console.log(response);
       throw Error(response.statusText);
     }else{
       return response;

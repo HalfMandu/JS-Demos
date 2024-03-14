@@ -39,7 +39,7 @@
   <div class="field">
     <label class="label">Input 3:</label>
     <div class="control">
-      <input class="input" type="text">
+      <input class="input" #box3 (keyup)="keyPress3(box3.value)">
     </div>
     output:
   </div>

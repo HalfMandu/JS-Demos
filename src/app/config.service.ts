@@ -12,11 +12,16 @@ export class ConfigService {
 
   configUrl = 'assets/config.json';
 
+  //Most basic version possible
+  getConfigBasic(){
+   return this.httpClient.get(this.configUrl);
+ }
+
   //with a generic, Config (IUnterface below) that indicates the data return type
   getConfig(): Observable<Config> {
-    return <Observable<any>>this.httpClient.get<Config>(this.configUrl)
+    return <Observable<Config>>this.httpClient.get<Config>(this.configUrl)
       .pipe(catchError(this.errorHandler));
-  }
+  }    
 
   //Tell HttpClient that you want the full response with the observe option of the get() method...
   //Sometimes servers return special headers or status codes to indicate certain conditions...
