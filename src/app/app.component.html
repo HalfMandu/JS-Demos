@@ -34,12 +34,12 @@
 <!-- API calls -->
 <div class="wrapper">
 
-  <!-- fetch items from api endpoint -->
+  <!-- Autocomplete -->
   <hr>
   <div class="field">
-    <label class="label">Input 3:</label>
+    <label class="label">Input 3 (Autocomplete):</label>
     <div class="control">
-      <input class="input" #box3 (keyup)="keyPress3(box3.value)">
+      <input class="input" #box3 (keyup)="autoComplete(box3.value)">
     </div>
     output:
   </div>

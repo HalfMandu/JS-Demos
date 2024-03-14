@@ -4,7 +4,11 @@ import { HeaderComponent } from './header/header.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
-import { HttpClient, HttpClientModule, HttpHandler } from  '@angular/common/http';
+import {
+  HttpClient,
+  HttpClientModule,
+  HttpHandler,
+} from '@angular/common/http';
 import { ConfigService } from './config.service';
 
 /* 
@@ -37,12 +41,17 @@ import { ConfigService } from './config.service';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HttpClientModule, HeaderComponent, FormsModule, CommonModule],
+  imports: [
+    RouterOutlet,
+    HttpClientModule,
+    HeaderComponent,
+    FormsModule,
+    CommonModule,
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
-  
   //input fields
   title: string = 'fetchList';
   outArray: string[] = [];
@@ -53,13 +62,16 @@ export class AppComponent {
   authorUrl: string = 'https://type.fit/api/quotes'; //array of 2-field objects: author, text
   authors: any;
   //autocomplete
-  //myTimer: NodeJS.Timeout | number = 0;
+  timeoutID: any;
   isWaiting = false;
-  query = "";
+  query = '';
   items = [];
-  url = "";
+  url = '';
 
-  constructor(private httpClient: HttpClient, private configService: ConfigService) { }
+  constructor(
+    private httpClient: HttpClient,
+    private configService: ConfigService
+  ) {}
 
   ngOnInit(): void {
     // this.showConfig();
@@ -76,12 +88,12 @@ export class AppComponent {
     //httpClient2();
   }
 
-  //////////////////////////////////
-  //Event handlers 
+  ////////////////////////////////////////////////////////////////////
+  //Event handlers
 
   //receives #ID ref param -- faster...uses Array to store entries
   keyPress1(value: string) {
-    this.outArray.push(value + " | ");
+    this.outArray.push(value + ' | ');
   }
 
   //using string instead of array
@@ -94,108 +106,106 @@ export class AppComponent {
     this.query1 += (event.target as HTMLInputElement).value + ' | ';
   }
 
-  //////////////////////////////////
+  ////////////////////////////////////////////////////////////////////
   //Autcomplete input
-  keyPress3(value: string) {
-    this.query = value;
+
+  //called on every keypress in the input...waits 2 seconds (debounce) and only sends if input non-empty
+  autoComplete(value: string) {
+
+    console.log('key pressed...', value);    
+    clearTimeout(this.timeoutID); //reset timer on each key press
+    
+    this.timeoutID = setTimeout(() =>{
+      if (value) {
+        console.log('timer done AND input not empty, sending http request...');
+        // this.httpClient.get(this.url)
+        //   .then(items) => this.items = items;
+      }
+    }, 2000);
   }
 
-  //function called on each key press...reset the timer, update the status, attempt to make the call
-  // keyPressed(key: any) {
-
-  //   console.log("key pressed..." + key);
-
-  //   clearTimeout(this.myTimer); 	//reset timer each time key pressed
-  //   this.isWaiting = true; 			//update status
-
-  //   //if input not empty AND waiting status was not interrupted, then make the API call. Then reset status.
-  //   this.myTimer = setTimeout(() => {
-  //     //if (this.isWaiting && document.getElementsByName("query")[0].value) {
-  //     if (this.isWaiting && this.query) {
-  //       console.log("making API call with: " + this.query);
-  //       this.httpClient.get(this.url).then(items) => this.items = items;
-  //     }
-  //     this.isWaiting = false; 	//reset status
-  //   }, 2000);
-  // }
-
-  //////////////////////////////////
+  ////////////////////////////////////////////////////////////////////
   //Data fetching
 
   //call service, subscribe to Observable
   showConfig() {
-    this.configService.getConfig()
-      .subscribe(data => this.config = {
+    this.configService.getConfig().subscribe(
+      (data) =>
+        (this.config = {
           heroesUrl: data.heroesUrl,
-          textfile:  data.textfile,
+          textfile: data.textfile,
           date: data.date,
-      });
+        })
+    );
   }
 
   //v2 -- destructuring...clone the data object, using its known Config shape
   showConfig2() {
-    this.configService.getConfig()
-      .subscribe(data => this.config = { ...data });
+    this.configService
+      .getConfig()
+      .subscribe((data) => (this.config = { ...data }));
   }
 
   //v3 -- searching with search terms
   showConfig3() {
-    this.configService.searchTerm("2020-01-29")
-      .subscribe(data => this.config = { ...data });
+    this.configService
+      .searchTerm('2020-01-29')
+      .subscribe((data) => (this.config = { ...data }));
   }
-  
-  ////////////////////////////////////////////////
+
+  /////////////////////////////////////////////////////////////////////////
   // .then() vs async/await
 
   //using fetch() with .then() chain
-  useFetch(){
+  useFetch() {
     fetch(this.authorUrl)
-      .then(response => response.json())
-      .then(data => this.authors = data)
-      .catch(error => {console.log(error)});
+      .then((response) => response.json())
+      .then((data) => (this.authors = data))
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   //using fetch() with async/await
-  async useFetch2(){
+  async useFetch2() {
     const response = await fetch(this.authorUrl);
-		this.authors = await response.json();
+    this.authors = await response.json();
   }
-  
+
   //wrapping in function, gives its own namespace, security, self-calling, immutable...
   //..self calling, nameless function is assigned to the variable
-	useFetch3 = () => {
+  useFetch3 = () => {
     (async () => {
       const response = await fetch(this.authorUrl);
-			this.authors = await response.json();
-		})();
-	}
-  
+      this.authors = await response.json();
+    })();
+  };
+
   //using fetch() with error handling block
-  async useFetch4(){
+  async useFetch4() {
     try {
       const response = await fetch(this.authorUrl);
       this.authors = await response.json();
     } catch (error) {
-      console.log("Error:", error);
+      console.log('Error:', error);
     }
   }
 
   //now with response checking
-  async useFetch5(){
-      const response = await fetch(this.authorUrl);
-      if (response.ok) {
-        this.authors = await response.json();
-      }
-      else{
-        throw new Error('Something went wrong');
-      }
+  async useFetch5() {
+    const response = await fetch(this.authorUrl);
+    if (response.ok) {
+      this.authors = await response.json();
+    } else {
+      throw new Error('Something went wrong');
+    }
   }
 
   //using fetch() with .then() chain
-  useFetch6(){
+  useFetch6() {
     return fetch(this.authorUrl)
-      .then(response => response.json())
-      .then(data => this.authors = data)
+      .then((response) => response.json())
+      .then((data) => (this.authors = data))
       .then(this.handleErrors);
   }
 
@@ -204,7 +214,7 @@ export class AppComponent {
     if (!response) {
       console.log(response);
       throw Error(response.statusText);
-    }else{
+    } else {
       return response;
     }
   }
@@ -213,15 +223,14 @@ export class AppComponent {
   httpClient1(term: string): Observable<Object> {
     return this.httpClient.request('GET', this.authorUrl);
   }
-  
+
   //HttpClient - http.get
   httpClient2() {
     return this.httpClient.get(this.authorUrl);
   }
-  
+
   //JSONP example
   // requestJsonp(url4, callback = 'callback') {
   //   return this.httpClient.jsonp(this.url4, callback);
   //  }
-  
 }
