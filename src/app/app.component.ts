@@ -80,8 +80,8 @@ export class AppComponent {
     'iphone',
     'iphone 12',
   ];
-  // displayedMatches = this.search_terms;
-  displayedMatches: any;
+  displayedMatches = this.search_terms;
+  // displayedMatches: any;
 
   constructor(
     private httpClient: HttpClient,
@@ -127,14 +127,33 @@ export class AppComponent {
   ////////////////////////////////////////////////////////////////////
   //Autcomplete input
 
-  //checking against local array in memory...if empty input, reset
+  
+  //list displayed on page open
   autocompleteLocal(input: string) {
+    if (!input) {
+      this.displayedMatches = this.search_terms;
+      return;
+    }
+    const reg = new RegExp(input);
+    this.displayedMatches = this.search_terms.filter(term => {
+      if (term.match(reg)) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+    return;
+  }
+
+  //list NOT displayed on page open
+  //checking against local array in memory...if empty input, reset
+  autocompleteLocal2(input: string) {
     if (!input) {
       this.displayedMatches = [];
       return;
     }
     const reg = new RegExp(input);
-    this.displayedMatches = this.search_terms.filter(term => {
+    this.displayedMatches = this.search_terms.filter((term) => {
       if (term.match(reg)) {
         return true;
       } else {
