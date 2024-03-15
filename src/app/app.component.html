@@ -34,16 +34,31 @@
 <!-- API calls -->
 <div class="wrapper">
 
-  <!-- Autocomplete -->
+  <!-- Autocomplete Local -->
   <hr>
   <div class="field">
-    <label class="label">Input 3 (Autocomplete):</label>
+    <label class="label">Input 3 (Autocomplete Local):</label>
     <div class="control">
-      <input class="input" #box3 (keyup)="autoComplete(box3.value)">
+      <input class="input" #box3 (keyup)="autocompleteLocal(box3.value)">
     </div>
     output:
     <br>
-      <!-- {{authors}} -->
+    <!-- {{items output}} -->
+    <ul class="list-group">
+      <li class="list-item" *ngFor="let item of displayedMatches"><b>{{item}}</b> : {{item}} 
+      </li>
+    </ul>
+
+  <!-- Autocomplete -->
+  <hr>
+  <div class="field">
+    <label class="label">Input 4 (Autocomplete Remote):</label>
+    <div class="control">
+      <input class="input" #box4 (keyup)="autoCompleteRemote(box4.value)">
+    </div>
+    output:
+    <br>
+  <!-- {{authors}} -->
   <ul class="list-group">
     <li class="list-item" *ngFor="let item of items"><b>{{item.name}}</b> : {{item.description}} 
     </li>

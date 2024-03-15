@@ -4,12 +4,9 @@ import { HeaderComponent } from './header/header.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
-import {
-  HttpClient,
-  HttpClientModule,
-  HttpHandler,
-} from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ConfigService } from './config.service';
+import { QuotesLocal } from '../assets/quotes';
 
 /* 
 -Demonstrating various input setups
@@ -74,6 +71,17 @@ export class AppComponent {
   items2 = [];
   items: any;
   url = '';
+  quotesLocal: any;
+  search_terms = [
+    'apple',
+    'apple watch',
+    'apple macbook',
+    'apple macbook pro',
+    'iphone',
+    'iphone 12',
+  ];
+  // displayedMatches = this.search_terms;
+  displayedMatches: any;
 
   constructor(
     private httpClient: HttpClient,
@@ -93,6 +101,9 @@ export class AppComponent {
     this.useFetch6();
     //httpClient1();
     //httpClient2();
+
+    this.quotesLocal = QuotesLocal;
+    //console.log(this.quotesLocal);
   }
 
   ////////////////////////////////////////////////////////////////////
@@ -116,20 +127,36 @@ export class AppComponent {
   ////////////////////////////////////////////////////////////////////
   //Autcomplete input
 
-  //called on every keypress in the input...waits 2 seconds (debounce) and only sends if input non-empty
-  autoComplete(value: string) {
+  //checking against local array in memory...if empty input, reset
+  autocompleteLocal(input: string) {
+    if (!input) {
+      this.displayedMatches = [];
+      return;
+    }
+    const reg = new RegExp(input);
+    this.displayedMatches = this.search_terms.filter(term => {
+      if (term.match(reg)) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+    return;
+  }
 
-    console.log('key pressed...', value);    
+  //called on every keypress in the input...waits 2 seconds (debounce) and only sends if input non-empty
+  autoCompleteRemote(value: string) {
+    console.log('key pressed...', value);
     clearTimeout(this.timeoutID); //reset timer on each key press
-    
-    this.timeoutID = setTimeout(() =>{
+
+    this.timeoutID = setTimeout(() => {
       if (value) {
         console.log('timer done AND input not empty, sending http request...');
         // this.httpClient.get(this.gitHubURL)
         //   .then(items) => this.items = items;
-        this.httpClient.get(this.gitHubURL).subscribe(res => {
+        this.httpClient.get(this.gitHubURL).subscribe((res) => {
           this.items = res;
-        })
+        });
       }
     }, 2000);
   }
