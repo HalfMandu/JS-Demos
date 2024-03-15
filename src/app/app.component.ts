@@ -8,38 +8,6 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ConfigService } from './config.service';
 import { QuotesLocal } from '../assets/quotes';
 
-/* 
--Demonstrating various input setups
-  -#ID on the input
-  -$event object
--Fetching/displaying data from API
-  -HTTPClient
-    -benefits of HttpClient include testability features, 
-    typed request and response objects, request and response interception, 
-    Observable apis, and streamlined error handling.
-  -fetch() 
-    -not recommended
-    -will return a promise, instead of Observable
-  -JSONP
-    -works around limitations of certain API endpoints that don't support newer/preferable CORS protocol
-    -API sets certain headers in the response a browser will reject the response
--Using/Injecting Config Service to help offload the wor
--Autocomplete task:
-	-fetch items from API then display them in the list
-		-set items to local scope upon return
-	-autocomplete: the api accepts a parameter which is the user input
-	-however, api call should only be made if
-		1. user input is not-blank
-		2. 5000ms have passed 
-	-user input should start some timer which, once elapsed, will check the input
-		-if not empty, it will use it as the param to make the api call
-  -You can use the github api for this. 
-    https://api.github.com/users/USERNAME/repos 
-      will list public repositories for the user USERNAME. 
-    to find all the user's repos
-	    https://api.github.com/users/halfmandu/repos
- */
-
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -72,7 +40,7 @@ export class AppComponent {
   items: any;
   url = '';
   quotesLocal: any;
-  search_terms = [
+  searchTerms = [
     'apple',
     'apple watch',
     'apple macbook',
@@ -80,7 +48,7 @@ export class AppComponent {
     'iphone',
     'iphone 12',
   ];
-  displayedMatches = this.search_terms;
+  displayedMatches = this.searchTerms;
   // displayedMatches: any;
 
   constructor(
@@ -127,21 +95,15 @@ export class AppComponent {
   ////////////////////////////////////////////////////////////////////
   //Autcomplete input
 
-  
   //list displayed on page open
+  //match() method of String checks string against a regular expression
   autocompleteLocal(input: string) {
     if (!input) {
-      this.displayedMatches = this.search_terms;
+      this.displayedMatches = this.searchTerms;
       return;
     }
     const reg = new RegExp(input);
-    this.displayedMatches = this.search_terms.filter(term => {
-      if (term.match(reg)) {
-        return true;
-      } else {
-        return false;
-      }
-    });
+    this.displayedMatches = this.searchTerms.filter((term) => term.match(reg));
     return;
   }
 
@@ -153,29 +115,27 @@ export class AppComponent {
       return;
     }
     const reg = new RegExp(input);
-    this.displayedMatches = this.search_terms.filter((term) => {
-      if (term.match(reg)) {
-        return true;
-      } else {
-        return false;
-      }
-    });
+    this.displayedMatches = this.searchTerms.filter(term => term.match(reg));
     return;
   }
 
+  itemsAll: any;
+  itemsDisplayed: any;
+  
   //called on every keypress in the input...waits 2 seconds (debounce) and only sends if input non-empty
-  autoCompleteRemote(value: string) {
-    console.log('key pressed...', value);
-    clearTimeout(this.timeoutID); //reset timer on each key press
-
+  autoCompleteRemote(input: string) {
+    
+    console.log('key pressed: ', input);
+    clearTimeout(this.timeoutID);
+    
     this.timeoutID = setTimeout(() => {
-      if (value) {
-        console.log('timer done AND input not empty, sending http request...');
-        // this.httpClient.get(this.gitHubURL)
-        //   .then(items) => this.items = items;
-        this.httpClient.get(this.gitHubURL).subscribe((res) => {
-          this.items = res;
+      if (input) {
+        this.httpClient.get(this.gitHubURL).subscribe(res => {
+          const reg = new RegExp(input, 'i');
+          this.itemsDisplayed = Object.values(res).filter((repo:Repo) => repo.name.match(reg));
         });
+      }else{
+        this.itemsDisplayed = [];
       }
     }, 2000);
   }
@@ -289,4 +249,8 @@ export class AppComponent {
   // requestJsonp(url4, callback = 'callback') {
   //   return this.httpClient.jsonp(this.url4, callback);
   //  }
+}
+
+export interface Repo {
+  name: string;
 }
