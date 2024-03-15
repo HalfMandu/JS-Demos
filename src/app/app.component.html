@@ -33,7 +33,7 @@
   <div class="field">
     <label class="label">Input 3 (Autocomplete Local)</label>
     <div class="control">
-      <input class="input" #box3 (keyup)="autocompleteLocal(box3.value)">
+      <input class="input" #box3 (keyup)="autoCompleteLocalDebounce(box3.value)">
     </div>
     <ul class="list-group">
       <li class="list-item" *ngFor="let item of displayedMatches"><b>{{item}}</b> : {{item}}

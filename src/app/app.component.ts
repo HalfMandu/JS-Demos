@@ -115,30 +115,45 @@ export class AppComponent {
       return;
     }
     const reg = new RegExp(input);
-    this.displayedMatches = this.searchTerms.filter(term => term.match(reg));
+    this.displayedMatches = this.searchTerms.filter((term) => term.match(reg));
     return;
   }
 
-  itemsAll: any;
-  itemsDisplayed: any;
-  
-  //called on every keypress in the input...waits 2 seconds (debounce) and only sends if input non-empty
+  //debounce (1-second)
+  autoCompleteLocalDebounce(input: string) {
+
+    clearTimeout(this.timeoutID);
+
+    this.timeoutID = setTimeout(() => {
+      const reg = new RegExp(input);
+      this.displayedMatches = this.searchTerms.filter(term => term.match(reg));
+      return;
+    }, 1000);
+  }
+
+  isFirst: boolean = true;    //tells whether or not data has been brought to front end yet...dont' bring unless user wants it 
+  itemsAll: any;              //all items brought into frontend memory
+  itemsDisplayed: any;        //subset which will be displayed based on filtering with userinput
+
+  //called on every keypress in the input...waits 1 second (debounce) and only sends if input non-empty
   autoCompleteRemote(input: string) {
-    
-    console.log('key pressed: ', input);
+
     clearTimeout(this.timeoutID);
     
+    //only make http request once (after first keystroke)...then filter on frontend subsequently
     this.timeoutID = setTimeout(() => {
-      if (input) {
+      if (this.isFirst) {
         this.httpClient.get(this.gitHubURL).subscribe(res => {
-          const reg = new RegExp(input, 'i');
-          this.itemsDisplayed = Object.values(res).filter((repo:Repo) => repo.name.match(reg));
-        });
-      }else{
-        this.itemsDisplayed = [];
-      }
-    }, 2000);
-  }
+          this.isFirst = false;
+          this.itemsAll = Object.values(res);
+        });  
+      } 
+      const reg = new RegExp(input, 'i');
+      this.itemsDisplayed = input ? this.itemsAll?.filter((repo: Repo) => repo.name.match(reg)) : [];
+            
+    }, 1000);  
+
+  }  
 
   ////////////////////////////////////////////////////////////////////
   //Data fetching
@@ -159,7 +174,7 @@ export class AppComponent {
   showConfig2() {
     this.configService
       .getConfig()
-      .subscribe((data) => (this.config = { ...data }));
+      .subscribe(data => (this.config = { ...data }));
   }
 
   //v3 -- searching with search terms
