@@ -1,3 +1,29 @@
+# About
+
+Demonstrating various input setups
+*    #ID on the input
+*    $event object
+Fetching/displaying data from API
+*    HTTPClient
+      *    benefits of HttpClient include testability features, 
+    typed request and response objects, request and response interception, 
+    Observable apis, and streamlined error handling.
+*    JSONP
+      *    works around limitations of certain API endpoints that don't support newer/preferable CORS protocol
+      *    API sets certain headers in the response a browser 
+*    Autocomplete
+      * fetch items from API then display them in the list
+      *    set items to local scope upon return
+*    the api accepts a parameter which is the user input
+	  *    api call only be made if
+		    1. user input is not-blank
+		    2. 2000ms have passed 
+*    user input should start some timer which, once elapsed, will check the input
+	*    if not empty, it will use it as the param to make the api call
+*    github api for calls 
+    https://api.github.com/users/USERNAME/repos 
+	https://api.github.com/users/halfmandu/repos
+
 # FetchList 
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.2.3.
@@ -35,32 +61,3 @@ Typescript: 5.3.3
 npm: 10.2.4
 nvm: 1.1.12
 
-# About
-
-Demonstrating various input setups
-  -#ID on the input
-  -$event object
-Fetching/displaying data from API
-  -HTTPClient
-    -benefits of HttpClient include testability features, 
-    typed request and response objects, request and response interception, 
-    Observable apis, and streamlined error handling.
-  -fetch() 
-    -not recommended
-    -will return a promise, instead of Observable
-  -JSONP
-    -works around limitations of certain API endpoints that don't support newer/preferable CORS protocol
-    -API sets certain headers in the response a browser will reject the response
-Using/Injecting Config Service to help offload the wor
-Autocomplete:
-	-fetch items from API then display them in the list
-	    -set items to local scope upon return
-	-the api accepts a parameter which is the user input
-	    -api call only be made if
-		    1. user input is not-blank
-		    2. 2000ms have passed 
-	-user input should start some timer which, once elapsed, will check the input
-		-if not empty, it will use it as the param to make the api call
-  -github api for calls 
-    https://api.github.com/users/USERNAME/repos 
-	https://api.github.com/users/halfmandu/repos
